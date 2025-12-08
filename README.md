@@ -28,7 +28,7 @@ Load the country at a medium level and import the data:
 australia <- ne_countries(scale = "medium", country = "Australia", returnclass = "sf")
 
 # Uste prevalence data
-data <- read_excel("Uste-prevalence-spreadsheet.xlsx", sheet=")
+data <- read_excel("Uste-prevalence-spreadsheet.xlsx", sheet="Hookworm-prev Aus")
 ```
 
 To filter the results to only include *U. stenocephala*:
