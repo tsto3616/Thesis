@@ -14,6 +14,10 @@ The data was mined and analysed using the following libraries:
 library(rentrez)
 library(XML)
 library(tm)
+library(ggplot2)
+library(ggprism)
+library(dplyr)
+library(tidyr)
 ```
 
 Then the data was mined via rentrez for both *U. stenocephala* and *A. caninum.* The number of retrieved articles differed greatly for the two species, with *U. stenocephala* retrieving 192 articles from the past to the end of 2022 and *A. caninum* retrieving 799 articles in the same timeline:
@@ -108,7 +112,7 @@ Now that the files are manipulated we can proceed to export key words as a csv f
 
 ```         
 target_words <- c("stenocephala", "caninum", "gene", "protein", "proteins",
-                  "molecular", "prevalence", "australia", "dogs", "dog")
+                  "molecular", "prevalence")
 
 # For Uncinaria stenocephala abstracts
 freq_Uste <- data.frame(
@@ -131,3 +135,38 @@ write.csv(freq_Acan, "C:/Users/tsto3616/thesis-drafts/Acan_word_counts.csv", row
 ```
 
 **The resultant csv files were merged and had plural and singular key words merged - it can be found under this branch as "2022-text-mining.csv"**
+
+The graphing based analyses are as follows:
+
+```         
+merged_csv<- read.csv("C:/Users/tsto3616/thesis/2022-text-mining.csv")
+
+head(merged_csv)
+
+# Average the numeric columns (skip the first categorical column)
+divisors <- c(192, 799)
+
+# Apply sweep only to numeric columns
+df_divided <- merged_csv
+df_divided[, 2:3] <- sweep(merged_csv[, 2:3], 2, divisors, FUN="/")
+
+df_divided
+
+pivoted<- df_divided %>% pivot_longer(cols=c(Uste,Acan), names_to="Hookworms", values_to="Word_freq")
+
+pivoted
+
+custom_order <- c("caninum", "stenocephala", "prevalence", "molecular", "protein", "gene")
+
+# reorder the words
+pivoted$word <- factor(pivoted$word, levels = custom_order)
+
+plot <- ggplot(pivoted, aes(x=word, y=Word_freq, fill=Hookworms))+
+  geom_bar(stat = "identity", position = position_dodge()) +
+  labs(x = "Word", y = "Frequency", title = "Average word Frequencies in Abstracts") +
+  theme_minimal() + theme_prism(base_size = 12) +        # Prism-style theme
+  scale_fill_prism(palette = "colors") +  # Prism color palette
+  theme(axis.text.x = element_text(angle =90, hjust = 1))
+
+plot
+```
