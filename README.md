@@ -30,12 +30,18 @@ australia <- ne_countries(scale = "medium", country = "Australia", returnclass =
 data <- read.csv("Uste-prevalence-spreadsheet.csv")
 ```
 
+To filter the results to only include *U. stenocephala*:
+
+```         
+data_Uste<- data %>% filter(Species == "Uncinaria stenocephala")
+```
+
 Now for the graphing of the prevalence rates onto the map of Australia:
 
 ```         
 Uste<- ggplot(data = australia) +
   geom_sf(fill = "white", color = "black") +
-  geom_point(data = data, aes(x = Longitude, y = Latitude, color = Prevalence, size = Samples), alpha = 0.5) + scale_color_gradientn(colors = c("yellow", "red"), limits= c(0, 100)) + ggtitle("Australia with Uncinaria stenocephala prevalence rates") +
+  geom_point(data = data_Uste, aes(x = Longitude, y = Latitude, color = Prevalence, size = Samples), alpha = 0.5) + scale_color_gradientn(colors = c("yellow", "red"), limits= c(0, 100)) + ggtitle("Australia with Uncinaria stenocephala prevalence rates") +
   scale_size_continuous(limits = c(0, 800), range = c(2, 6)) + coord_sf(ylim = c(-5, -45), xlim = c(110, 155)) + theme_minimal()
 
 Uste
