@@ -1,25 +1,44 @@
-# **Thesis**
+# **Uste-prevalence branch**
 
-**The repository of Thomas Stocker's PhD Thesis Introduction, Discussion and Appendix**
+## **This branch details the inclusion criteria and the coding required to generate the map of Australia with overlapping prevalence rates of *Uncinaria stenocephala.***
 
-## **Navigating this repository:**
+### **Inclusion of *U. stenocephala* prevalence studies:**
 
-The repository is split into multiple branches according to the figure generated or the appendix needed for that particular subsection. Coding and extra details are found within the branch.
+A search of the prevalence rates of *U. stenocephala* was conducted in PubMed on the 17th of November 2025 using the search terms **"Uncinaria stenocephala Australia", "Uncinaria stenocephala New Zealand", "Hookworms Australia" and "Hookworms New Zealand"**. To be included in the map the Authors had to detail the location of the sampling with an identifiable GPS coordinate and had to detect at least one species specific identification of *U. stenocephala*. In the absence of either inclusion criteria the study would be excluded. By species specific identification the criteria was either molecular methods or morphology upon post mortems of the hosts.
 
-### **Introduction:**
+### **Coding pipeline in R:** 
 
-The first branch of relevance is for the Geographical prevalence of *Uncinaria stenocephala*. This branch features Figure 1 and Table 1 of the thesis introduction. This branch is called Uste-prevalence.
+Note the supplementary data collected from the search of PubMed is available under this branch for the name "Uste-prevalence-spreadsheet.csv".In brief the code below details the pipeline for the generation of the map:
 
-The second branch of relevance is the text mining of *U. stenocephala* and its neglected nature/ figure 2. This branch is called text-2022.
+Load the necessary libraries:
 
-The third branch is for the remaining figures of the Introduction, all of which originated from the computational biology component of the introduction. These include figures 3-5.
+```         
+library(ggplot2)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(sf)
+library(dplyr)
+```
 
-### **Discussion:**
+Load the country at a medium level and import the data:
 
-The branches of the discussion first include the text mining from the start of 2023- 2025, this branch is called text-2025.
+```         
+# Load Australia
+australia <- ne_countries(scale = "medium", country = "Australia", returnclass = "sf")
 
-The second branch for the figures relating to the future perspectives of other hookworms are in the Ancylostoma branch.
+# Uste prevalence data
+data <- read.csv("Uste-prevalence-spreadsheet.csv")
+```
 
-The zoonotic disease branch (Zoonoses) relates to the zoonotic diseases future directions from this thesis.
+Now for the graphing of the prevalence rates onto the map of Australia:
 
-Finally the computational limitations segment of the discussion can be found under comp-limits branch.
+```         
+Uste<- ggplot(data = australia) +
+  geom_sf(fill = "white", color = "black") +
+  geom_point(data = data, aes(x = Longitude, y = Latitude, color = Prevalence, size = Samples), alpha = 0.5) + scale_color_gradientn(colors = c("yellow", "red"), limits= c(0, 100)) + ggtitle("Australia with Uncinaria stenocephala prevalence rates") +
+  scale_size_continuous(limits = c(0, 800), range = c(2, 6)) + coord_sf(ylim = c(-5, -45), xlim = c(110, 155)) + theme_minimal()
+
+Uste
+```
+
+And **done**.
