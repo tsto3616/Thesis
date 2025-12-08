@@ -8,7 +8,7 @@ A search of the prevalence rates of *U. stenocephala* was conducted in PubMed on
 
 ### **Coding pipeline in R:** 
 
-Note the supplementary data collected from the search of PubMed is available under this branch for the name "Uste-prevalence-spreadsheet.csv".In brief the code below details the pipeline for the generation of the map:
+Note the supplementary data collected from the search of PubMed is available under this branch for the name "Uste-prevalence-spreadsheet.xlsx".In brief the code below details the pipeline for the generation of the map:
 
 Load the necessary libraries:
 
@@ -18,6 +18,7 @@ library(rnaturalearth)
 library(rnaturalearthdata)
 library(sf)
 library(dplyr)
+library(readxl)
 ```
 
 Load the country at a medium level and import the data:
@@ -27,7 +28,7 @@ Load the country at a medium level and import the data:
 australia <- ne_countries(scale = "medium", country = "Australia", returnclass = "sf")
 
 # Uste prevalence data
-data <- read.csv("Uste-prevalence-spreadsheet.csv")
+data <- read_excel("Uste-prevalence-spreadsheet.xlsx", sheet=")
 ```
 
 To filter the results to only include *U. stenocephala*:
