@@ -146,13 +146,17 @@ head(pie_data)
 
 p_map <- ggplot(data = anz) +
   geom_sf(fill = "white", color = "black") +
-  geom_scatterpie(data = pie_data,
-                  aes(x = Long, y = Lat),
-                  cols = names(pie_data)[grepl("Clade_", names(pie_data))],
-                  pie_scale = 0.9, lwd=0.2) +
+  geom_scatterpie(
+    data = pie_data,
+    aes(x = Long, y = Lat, colour = Status),   # map outline color to Status
+    cols = names(pie_data)[grepl("Clade_", names(pie_data))],
+    pie_scale = 0.9, lwd = 0.2
+  ) +
   coord_sf(xlim = c(140, 180), ylim = c(-45, -30)) +
   scale_fill_brewer(palette = "Set3") +
-  theme_minimal()+ theme(legend.position = "none")
+  scale_color_manual(values = c("Resistant" = "red", "Sensitive" = "black")) +
+  theme_minimal() +
+  theme(legend.position = "none")
 ```
 
 Now we add our complete tree with tip labels as shapes to denote the F167Y ASVs (triangles):
